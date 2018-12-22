@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/syafdia/go-clean-arch/feature/auth/presentation"
+	pauth "github.com/syafdia/go-clean-arch/feature/auth/presentation"
 	"github.com/syafdia/go-clean-arch/module"
 )
 
@@ -14,24 +14,17 @@ const (
 
 func main() {
 	appModule := module.NewAppModule()
-	repoModule := createRepoModule(appModule)
-	featureModule := createFeatureModule(repoModule)
-	authModule := featureModule.AuthModule()
+	repoModule := module.NewRepositoryModule(appModule)
+	useCaseModule := module.NewUseCaseModule(repoModule)
+	presentationModule := module.NewPresentationModule(useCaseModule)
 
 	r := gin.Default()
 
 	setupPingApi(r)
-	setupAuthApi(r, authModule.AuthAPI())
+	setupAuthApi(r, presentationModule.AuthAPI())
+	setupAuthMidleware(r, presentationModule.AuthMiddleware())
 
 	r.Run()
-}
-
-func createRepoModule(appModule *module.AppModule) *module.RepositoryModule {
-	return module.NewRepositoryModule(appModule.DB(), appModule.RedisClient())
-}
-
-func createFeatureModule(repoModule *module.RepositoryModule) *module.FeatureModule {
-	return module.NewFeatureModule(repoModule)
 }
 
 func setupPingApi(r *gin.Engine) {
@@ -42,8 +35,12 @@ func setupPingApi(r *gin.Engine) {
 	})
 }
 
-func setupAuthApi(r *gin.Engine, authAPI *presentation.AuthAPI) {
+func setupAuthApi(r *gin.Engine, authAPI *pauth.AuthAPI) {
 	r.POST(routeSignIn, authAPI.SignIn)
 	r.POST(routeSignUp, authAPI.SignUp)
 	r.POST(routeForgotPassword, authAPI.ForgotPassword)
+}
+
+func setupAuthMidleware(r *gin.Engine, authMiddleware *pauth.AuthMiddleware) {
+	r.Use(authMiddleware.ValidateOrDie())
 }
