@@ -29,7 +29,7 @@ type userRepository struct {
 	redisClient *redis.Client
 }
 
-func NewUserRepository(db *sql.DB, redisClient *redis.Client) UserRepository {
+func NewUserRepository(db *sql.DB, redisClient *redis.Client) *userRepository {
 	return &userRepository{
 		db:          db,
 		redisClient: redisClient,

@@ -1,32 +1,34 @@
 package module
 
 import (
-	"database/sql"
+	"sync"
 
-	"github.com/go-redis/redis"
 	repo "github.com/syafdia/go-clean-arch/data/repository"
 )
 
-type RepositoryModule struct {
-	db          *sql.DB
-	redisClient *redis.Client
-}
+type RepositoryModule struct{}
 
-func NewRepositoryModule(db *sql.DB, redisClient *redis.Client) *RepositoryModule {
-	return &RepositoryModule{
-		db:          db,
-		redisClient: redisClient,
-	}
+var (
+	repoModuleInstance *RepositoryModule
+	repoModuleOnce     sync.Once
+	userRepo           repo.UserRepository
+	authRepo           repo.AuthRepository
+)
+
+func NewRepositoryModule(appModule *AppModule) *RepositoryModule {
+	repoModuleOnce.Do(func() {
+		repoModuleInstance = &RepositoryModule{}
+		userRepo = repo.NewUserRepository(appModule.DB(), appModule.RedisClient())
+		authRepo = repo.NewAuthRepository(appModule.DB(), appModule.RedisClient())
+	})
+
+	return repoModuleInstance
 }
 
 func (r *RepositoryModule) UserRepository() repo.UserRepository {
-	userRepo := repo.NewUserRepository(r.db, r.redisClient)
-
 	return userRepo
 }
 
 func (r *RepositoryModule) AuthRepository() repo.AuthRepository {
-	authRepo := repo.NewAuthRepository(r.db, r.redisClient)
-
 	return authRepo
 }

@@ -3,9 +3,9 @@ package usecase
 import (
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/mock"
-
 	"github.com/syafdia/go-clean-arch/data/entity"
 	repo "github.com/syafdia/go-clean-arch/data/repository"
 	"github.com/syafdia/go-clean-arch/feature/auth/domain/model"
@@ -49,9 +49,16 @@ func (a *MockedAuthRepository) SignOut(token string) error {
 	return nil
 }
 
+func (m *MockedAuthRepository) GenerateToken(username string, userID string) (entity.Token, error) {
+	args := m.Called(username, userID)
+
+	return args.Get(0).(entity.Token), args.Error(1)
+}
+
 func TestAuthUseCase_SignIn(t *testing.T) {
 	userRepo := new(MockedUserRepository)
 	authRepo := new(MockedAuthRepository)
+	tokenExpiredAt := time.Now()
 
 	type fields struct {
 		userRepo repo.UserRepository
@@ -77,16 +84,16 @@ func TestAuthUseCase_SignIn(t *testing.T) {
 			},
 			args: args{
 				i: model.InputSignIn{
-					"foousername",
-					"foopassword",
+					Username: "foousername",
+					Password: "foopassword",
 				},
 			},
 			want: model.ResponseSignIn{
-				entity.User{
-					ID:       "1",
-					Username: "Foo Bar",
-					Role:     entity.UserRoleDefault,
-				},
+				UserID:         "1",
+				Username:       "FooBar",
+				Role:           entity.UserRoleDefault,
+				Token:          "thisisatoken",
+				TokenExpiredAt: tokenExpiredAt,
 			},
 			wantErr: false,
 		},
@@ -95,17 +102,21 @@ func TestAuthUseCase_SignIn(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			switch tt.id {
 			case 1:
+				authRepo.On("GenerateToken", "FooBar", "1").Return(entity.Token{
+					Value:     "thisisatoken",
+					ExpiredAt: tokenExpiredAt,
+				}, nil)
+
 				authRepo.On("Authenticate", "foousername", "foopassword").Return(entity.User{
 					ID:       "1",
-					Username: "Foo Bar",
+					Username: "FooBar",
 					Role:     entity.UserRoleDefault,
 				}, nil)
 			}
 
-			a := &AuthUseCase{
-				userRepo: tt.fields.userRepo,
-				authRepo: tt.fields.authRepo,
-			}
+			a := NewAuthUseCase(
+				tt.fields.userRepo,
+				tt.fields.authRepo)
 
 			got, err := a.SignIn(tt.args.i)
 			if (err != nil) != tt.wantErr {

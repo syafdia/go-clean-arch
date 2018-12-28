@@ -2,14 +2,26 @@ package module
 
 import (
 	"database/sql"
+	"sync"
 
 	"github.com/go-redis/redis"
 )
 
 type AppModule struct{}
 
+var (
+	appModuleInstance *AppModule
+	appModuleOnce     sync.Once
+	sqlDB             *sql.DB
+	redisClient       *redis.Client
+)
+
 func NewAppModule() *AppModule {
-	return &AppModule{}
+	appModuleOnce.Do(func() {
+		appModuleInstance = &AppModule{}
+	})
+
+	return appModuleInstance
 }
 
 func (a *AppModule) DB() *sql.DB {

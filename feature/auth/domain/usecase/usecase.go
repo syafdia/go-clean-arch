@@ -18,13 +18,28 @@ type authUseCase struct {
 	authRepo repo.AuthRepository
 }
 
-func NewAuthUseCase(userRepo repo.UserRepository, authRepo repo.AuthRepository) AuthUseCase {
+func NewAuthUseCase(userRepo repo.UserRepository, authRepo repo.AuthRepository) *authUseCase {
 	return &authUseCase{userRepo, authRepo}
 }
 
 func (a *authUseCase) SignIn(i model.InputSignIn) (model.ResponseSignIn, error) {
 	u, err := a.authRepo.Authenticate(i.Username, i.Password)
-	return model.ResponseSignIn{u}, err
+	if err != nil {
+		return model.EmptyResponseSignIn, err
+	}
+
+	t, err := a.authRepo.GenerateToken(u.Username, u.ID)
+	if err != nil {
+		return model.EmptyResponseSignIn, err
+	}
+
+	return model.ResponseSignIn{
+		UserID:         u.ID,
+		Username:       u.Username,
+		Role:           u.Role,
+		Token:          t.Value,
+		TokenExpiredAt: t.ExpiredAt,
+	}, err
 }
 
 func (a *authUseCase) SignUp(i model.InputSignUp) error {

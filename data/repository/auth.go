@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"time"
 
 	"github.com/go-redis/redis"
 
@@ -9,6 +10,8 @@ import (
 )
 
 type AuthRepository interface {
+	GenerateToken(username string, userID string) (entity.Token, error)
+
 	RefreshToken(token string) (entity.Token, error)
 
 	Authenticate(username string, password string) (entity.User, error)
@@ -21,11 +24,15 @@ type authRepository struct {
 	redisClient *redis.Client
 }
 
-func NewAuthRepository(db *sql.DB, redisClient *redis.Client) AuthRepository {
-	return &authRepository{
-		db:          db,
-		redisClient: redisClient,
-	}
+func NewAuthRepository(db *sql.DB, redisClient *redis.Client) *authRepository {
+	return &authRepository{db, redisClient}
+}
+
+func (a *authRepository) GenerateToken(username string, userID string) (entity.Token, error) {
+	return entity.Token{
+		Value:     "thisisasecrettoken",
+		ExpiredAt: time.Now().Add(12 * time.Hour),
+	}, nil
 }
 
 func (a *authRepository) RefreshToken(token string) (entity.Token, error) {
