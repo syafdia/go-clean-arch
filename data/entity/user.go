@@ -1,11 +1,11 @@
 package entity
 
-const (
-	UserRoleAdministrator = "administrator"
-	UserRoleDefault       = "default"
-)
-
 type UserRole string
+
+const (
+	UserRoleAdministrator UserRole = "administrator"
+	UserRoleDefault       UserRole = "default"
+)
 
 type User struct {
 	ID       string   `json:"id"`
