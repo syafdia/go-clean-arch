@@ -5,12 +5,12 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
-	"github.com/syafdia/go-clean-arch/config"
-	"github.com/syafdia/go-clean-arch/data"
-	"github.com/syafdia/go-clean-arch/presentation/http"
-	"github.com/syafdia/go-clean-arch/repository"
-	"github.com/syafdia/go-clean-arch/usecase"
-	authusecase "github.com/syafdia/go-clean-arch/usecase/auth"
+	"github.com/syafdia/go-clean-arch/internal/config"
+	"github.com/syafdia/go-clean-arch/internal/data"
+	"github.com/syafdia/go-clean-arch/internal/presentation/http"
+	"github.com/syafdia/go-clean-arch/internal/repository"
+	"github.com/syafdia/go-clean-arch/internal/usecase"
+	authusecase "github.com/syafdia/go-clean-arch/internal/usecase/auth"
 )
 
 var (

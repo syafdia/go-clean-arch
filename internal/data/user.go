@@ -5,8 +5,8 @@ import (
 	"database/sql"
 
 	"github.com/go-redis/redis"
-	"github.com/syafdia/go-clean-arch/entity"
-	"github.com/syafdia/go-clean-arch/repository"
+	"github.com/syafdia/go-clean-arch/internal/entity"
+	"github.com/syafdia/go-clean-arch/internal/repository"
 )
 
 type userRepository struct {

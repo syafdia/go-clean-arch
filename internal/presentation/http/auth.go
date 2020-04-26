@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/syafdia/go-clean-arch/entity"
-	"github.com/syafdia/go-clean-arch/usecase"
+	"github.com/syafdia/go-clean-arch/internal/entity"
+	"github.com/syafdia/go-clean-arch/internal/usecase"
 )
 
 type AuthHTTP interface {

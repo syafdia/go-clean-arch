@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 
-	"github.com/syafdia/go-clean-arch/entity"
+	"github.com/syafdia/go-clean-arch/internal/entity"
 )
 
 type UserRepository interface {

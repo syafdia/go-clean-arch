@@ -3,10 +3,10 @@ package auth
 import (
 	"context"
 
-	"github.com/syafdia/go-clean-arch/core/log"
-	"github.com/syafdia/go-clean-arch/entity"
-	"github.com/syafdia/go-clean-arch/repository"
-	"github.com/syafdia/go-clean-arch/usecase"
+	"github.com/syafdia/go-clean-arch/internal/entity"
+	"github.com/syafdia/go-clean-arch/internal/repository"
+	"github.com/syafdia/go-clean-arch/internal/usecase"
+	"github.com/syafdia/go-clean-arch/pkg/log"
 )
 
 type refreshToken struct {

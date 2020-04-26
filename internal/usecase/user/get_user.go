@@ -1,6 +1,6 @@
 package user
 
-import "github.com/syafdia/go-clean-arch/usecase"
+import "github.com/syafdia/go-clean-arch/internal/usecase"
 
 type GetUser struct {
 }
