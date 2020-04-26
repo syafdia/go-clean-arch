@@ -1,4 +1,4 @@
-package util
+package slice
 
 func FilterInt(xs []int, f func(int) bool) []int {
 	vs := []int{}
