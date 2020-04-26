@@ -1,9 +1,7 @@
-package model
+package entity
 
 import (
 	"time"
-
-	"github.com/syafdia/go-clean-arch/data/entity"
 )
 
 type SignInRequest struct {
@@ -12,12 +10,12 @@ type SignInRequest struct {
 }
 
 type SignInResponse struct {
-	UserID         string          `json:"user_id"`
-	Username       string          `json:"username"`
-	Role           entity.UserRole `json:"role"`
-	Token          string          `json:"token"`
-	RefreshToken   string          `json:"refresh_token"`
-	TokenExpiredAt time.Time       `json:"token_expired_at"`
+	UserID         string    `json:"user_id"`
+	Username       string    `json:"username"`
+	Role           UserRole  `json:"role"`
+	Token          string    `json:"token"`
+	RefreshToken   string    `json:"refresh_token"`
+	TokenExpiredAt time.Time `json:"token_expired_at"`
 }
 
 type SignUpRequest struct {
@@ -27,12 +25,16 @@ type SignUpRequest struct {
 }
 
 type SignUpResponse struct {
-	UserID         string          `json:"user_id"`
-	Username       string          `json:"username"`
-	Role           entity.UserRole `json:"role"`
-	Token          string          `json:"token"`
-	RefreshToken   string          `json:"refresh_token"`
-	TokenExpiredAt time.Time       `json:"token_expired_at"`
+	UserID         string    `json:"user_id"`
+	Username       string    `json:"username"`
+	Role           UserRole  `json:"role"`
+	Token          string    `json:"token"`
+	RefreshToken   string    `json:"refresh_token"`
+	TokenExpiredAt time.Time `json:"token_expired_at"`
+}
+
+type RefreshTokenRequest struct {
+	RefreshToken string `json:"refresh_token"`
 }
 
 type RefreshTokenResponse struct {
@@ -45,7 +47,3 @@ type ResetPasswordResponse struct {
 	ResetPasswordURL string    `json:"url"`
 	ExpiredAt        time.Time `json:"expired_at"`
 }
-
-var (
-	EmptySignInResponse SignInResponse
-)
